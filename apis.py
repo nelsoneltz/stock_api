@@ -41,16 +41,25 @@ class TimeSeriesMonthly(AlphaVantage):
 class TimeSeriesIntraday(AlphaVantage):
     type = 'TIME_SERIES_INTRADAY'
 
-    def _get_endpoint(self,interval:str):
+    def _get_endpoint(self,interval:str) -> str:
         return f"{self.base_endpoint}&function={self.type}&symbol={self.symbol}&interval={interval}"
 
-teste = TimeSeriesIntraday(symbol = 'IBM')
-# print(teste._get_endpoint())
-# print(teste.get_data(interval='60min'))
+teste = TimeSeriesDaily(symbol = 'IBM')
 
-# Serializing json
-json_object = json.dumps(teste.get_data(interval='60min'), indent=4)
- 
-# Writing to sample.json
-with open("sample.json", "w") as outfile:
-    outfile.write(json_object)
+with open('checkpoint.txt','r') as f:
+    checkpoint = f.read()
+
+dicionario = teste.get_data()
+print(dicionario)
+
+# last_refreshed_date = dicionario['Meta Data']['3. Last Refreshed']
+# print(last_refreshed_date)
+
+# if last_refreshed_date == checkpoint:
+#     print("Dado mais atualizado. Até amanhã.")
+# else:
+#     with open('checkpoint.txt','w') as f:
+#         f.write(last_refreshed_date)
+#     with open(f'{last_refreshed_date}_{teste.symbol}.json','w') as f2:
+#         f2.write(dicionario['Time Series (Daily)'][last_refreshed_date])
+
