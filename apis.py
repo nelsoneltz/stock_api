@@ -4,6 +4,9 @@ import datetime
 from abc import ABC, abstractmethod
 import logging
 import json
+import os
+
+
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -52,14 +55,18 @@ with open('checkpoint.txt','r') as f:
 dicionario = teste.get_data()
 print(dicionario)
 
-# last_refreshed_date = dicionario['Meta Data']['3. Last Refreshed']
-# print(last_refreshed_date)
+last_refreshed_date = dicionario['Meta Data']['3. Last Refreshed']
+print(last_refreshed_date)
 
-# if last_refreshed_date == checkpoint:
-#     print("Dado mais atualizado. Até amanhã.")
-# else:
-#     with open('checkpoint.txt','w') as f:
-#         f.write(last_refreshed_date)
-#     with open(f'{last_refreshed_date}_{teste.symbol}.json','w') as f2:
-#         f2.write(dicionario['Time Series (Daily)'][last_refreshed_date])
+if last_refreshed_date == checkpoint:
+    print("Dado mais atualizado. Até amanhã.")
+else:
+    with open('checkpoint.txt','w') as f:
+        f.write(last_refreshed_date)
+
+    exist_ = os.path.exists('arquivos')
+    if not exist_:
+        os.makedirs('arquivos', exist_ok=True)
+    with open(f'arquivos/{last_refreshed_date}_{teste.symbol}.json','w') as f2:
+        json.dump(dicionario['Time Series (Daily)'][last_refreshed_date],f2)
 
